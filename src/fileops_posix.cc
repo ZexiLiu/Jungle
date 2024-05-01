@@ -60,7 +60,12 @@ Status FileOpsPosix::open(FileHandle** fhandle_out,
     int flags = getFlags(mode);
 
     int r = ::open(pathname.c_str(), flags, 0644);
-    if (r <= 0) return Status::ERROR;
+    if (r <= 0) {
+        int n = errno;
+        std::cerr << "failed to open file " << pathname << ", flag " << flags
+                  << ", errno " << n << ", msg " << strerror(n) << std::endl;
+        return Status::ERROR;
+    }
 
     FileHandlePosix* fhandle = new FileHandlePosix(r, this);
     *fhandle_out = fhandle;

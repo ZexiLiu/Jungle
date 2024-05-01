@@ -66,13 +66,16 @@ Status TableMgr::createNewTableFile( size_t level,
                                      const TableFileOptions& t_opt ) {
     Status s;
     uint64_t t_num = 0;
-    EP( mani->issueTableNumber(t_num) );
+    _log_info(myLog, "[zexi_debug] level %zu: creating new table", level);
+    EP(mani->issueTableNumber(t_num));
+    _log_info(myLog, "[zexi_debug] level %zu: new table number %zu", level, t_num);
 
     TableFile* t_file = new TableFile(this);
     t_file->setLogger(myLog);
     std::string t_filename =
         TableFile::getTableFileName(opt.path, opt.prefixNum, t_num);
 
+    _log_info(myLog, "[zexi_debug] table file name: %s", t_filename.c_str());
     EP( t_file->create(level, t_num, t_filename, opt.fOps, t_opt) );
     uint64_t bf_size = t_file->getBfSize();
     _log_info(myLog, "level %zu: created new table %zu_%zu, "

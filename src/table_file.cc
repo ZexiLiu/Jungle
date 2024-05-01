@@ -175,8 +175,17 @@ void TableFile::FdbHandle::refreshSettings() {
 Status TableFile::FdbHandle::open(const std::string& filename) {
     fdb_status fs;
 
+    _log_info(
+        parent->myLog, "[zexi_debug] TableFile::FdbHandle::open %s", filename.c_str());
+
     fs = fdb_open(&dbFile, filename.c_str(), &config);
-    if (fs != FDB_RESULT_SUCCESS) return Status::FDB_OPEN_FILE_FAIL;
+    if (fs != FDB_RESULT_SUCCESS) {
+        _log_err(parent->myLog,
+                 "[zexi_debug] TableFile::FdbHandle::open %s failed, fs %d",
+                 filename.c_str(),
+                 fs);
+        return Status::FDB_OPEN_FILE_FAIL;
+    }
 
     fs = fdb_kvs_open(dbFile, &db, NULL, &kvsConfig);
     if (fs != FDB_RESULT_SUCCESS) return Status::FDB_OPEN_KVS_FAIL;
@@ -359,6 +368,12 @@ Status TableFile::create(size_t level,
     myNumber = table_number;
     fOps = f_ops;
     myOpt = opt;
+
+    _log_info(myLog,
+              "[zexi_debug] create table file, level %d, table_number %d, f_name %s",
+              level,
+              table_number,
+              filename.c_str());
 
     if (fOps->exist(filename)) {
         // Previous file exists, which means that there is a legacy log file.

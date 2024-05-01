@@ -219,14 +219,20 @@ struct VerboseLog {
 #define _SCU64(val) static_cast<uint64_t>(val)
 
 // Error Pass
-#define EP(cmd)         \
-    s = cmd;            \
-    if (!s) return s    \
+#define EP(cmd)                                                 \
+    s = cmd;                                                    \
+    if (!s) {                                                   \
+        std::cerr << "EP command: " << #cmd << ", s: " << s << std::endl; \
+        return s;                                               \
+    }
 
 // Try Catch
-#define TC(cmd)     \
-    s = cmd;        \
-    if (!s) throw s \
+#define TC(cmd)                                                                 \
+    s = cmd;                                                                    \
+    if (!s) {                                                                   \
+        std::cerr << "TC command: " << #cmd << ", s: " << s << std::endl; \
+        throw s;                                                               \
+    }
 
 // Error Break
 #define EB(cmd, msg)            \

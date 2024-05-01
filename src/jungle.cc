@@ -107,7 +107,7 @@ Status DB::open(DB** ptr_out,
             logfile = db_config.customManifestPath + "/system_logs.log";
         }
         db->p->myLog = new SimpleLogger(logfile, 1024, 32*1024*1024, 4);
-        db->p->myLog->setLogLevel(4);
+        db->p->myLog->setLogLevel(6);
         db->p->myLog->setDispLevel(-1);
         db->p->myLog->start();
     }
